@@ -1,0 +1,193 @@
+{% extends "base.html" %}
+
+{% block title %}Category Rules - Budget Monitor{% endblock %}
+{% block page_title %}Category Rules{% endblock %}
+
+{% block page_actions %}
+<button type="button" class="btn btn-primary" onclick="showCreateRuleModal()">
+    <i class="fas fa-plus me-1"></i>Add Rule
+</button>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-tags me-2"></i>
+                    Auto-Categorization Rules
+                </h5>
+            </div>
+            <div class="card-body">
+                <p class="text-muted mb-4">
+                    Create rules to automatically categorize purchases based on merchant names and descriptions. 
+                    Rules with higher priority are applied first.
+                </p>
+                
+                {% if rules %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Priority</th>
+                                    <th>Merchant Pattern</th>
+                                    <th>Description Pattern</th>
+                                    <th>Category</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for rule in rules %}
+                                <tr>
+                                    <td>
+                                        <span class="badge bg-primary">{{ rule.priority }}</span>
+                                    </td>
+                                    <td><code>{{ rule.merchant_pattern }}</code></td>
+                                    <td>
+                                        {% if rule.description_pattern %}
+                                            <code>{{ rule.description_pattern }}</code>
+                                        {% else %}
+                                            <span class="text-muted">Any description</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        <span class="badge bg-secondary">{{ rule.category }}</span>
+                                    </td>
+                                    <td>
+                                        <button class="btn btn-sm btn-outline-danger" onclick="deleteRule({{ rule.id }})">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <p class="text-muted text-center">No category rules defined yet. Create your first rule to start auto-categorizing purchases.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Create Rule Modal -->
+<div class="modal fade" id="createRuleModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Create Category Rule</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <form id="createRuleForm">
+                    <div class="mb-3">
+                        <label for="merchantPattern" class="form-label">Merchant Pattern *</label>
+                        <input type="text" class="form-control" id="merchantPattern" name="merchant_pattern" 
+                               required placeholder="e.g., walmart, costco, shell">
+                        <small class="form-text text-muted">
+                            Enter text that appears in merchant names. This is case-insensitive and will match if the text is found anywhere in the merchant name.
+                        </small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="descriptionPattern" class="form-label">Description Pattern (Optional)</label>
+                        <input type="text" class="form-control" id="descriptionPattern" name="description_pattern" 
+                               placeholder="e.g., gas, fuel, parking">
+                        <small class="form-text text-muted">
+                            Optional: Enter text that should appear in the purchase description for this rule to apply.
+                        </small>
+                    </div>
+                    <div class="mb-3">
+                        <label for="ruleCategory" class="form-label">Category *</label>
+                        <select class="form-select" id="ruleCategory" name="category" required>
+                            <option value="">Select a category</option>
+                            <option value="Food & Dining">Food & Dining</option>
+                            <option value="Transportation">Transportation</option>
+                            <option value="Shopping">Shopping</option>
+                            <option value="Entertainment">Entertainment</option>
+                            <option value="Bills & Utilities">Bills & Utilities</option>
+                            <option value="Health & Fitness">Health & Fitness</option>
+                            <option value="Travel">Travel</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label for="rulePriority" class="form-label">Priority</label>
+                        <input type="number" class="form-control" id="rulePriority" name="priority" 
+                               value="1" min="1" max="100">
+                        <small class="form-text text-muted">
+                            Higher priority rules are applied first. Default is 1.
+                        </small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <button type="button" class="btn btn-primary" onclick="saveRule()">Create Rule</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Example Rules Section -->
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">
+                    <i class="fas fa-lightbulb me-2"></i>
+                    Example Rules
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-6">
+                        <h6>Food & Dining</h6>
+                        <ul class="list-unstyled">
+                            <li><code>tim hortons</code> → Food & Dining</li>
+                            <li><code>starbucks</code> → Food & Dining</li>
+                            <li><code>subway</code> → Food & Dining</li>
+                            <li><code>mcdonalds</code> → Food & Dining</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Transportation</h6>
+                        <ul class="list-unstyled">
+                            <li><code>shell</code> → Transportation</li>
+                            <li><code>esso</code> → Transportation</li>
+                            <li><code>uber</code> → Transportation</li>
+                            <li><code>parking</code> → Transportation</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col-md-6">
+                        <h6>Shopping</h6>
+                        <ul class="list-unstyled">
+                            <li><code>walmart</code> → Shopping</li>
+                            <li><code>costco</code> → Shopping</li>
+                            <li><code>amazon</code> → Shopping</li>
+                            <li><code>best buy</code> → Shopping</li>
+                        </ul>
+                    </div>
+                    <div class="col-md-6">
+                        <h6>Bills & Utilities</h6>
+                        <ul class="list-unstyled">
+                            <li><code>rogers</code> → Bills & Utilities</li>
+                            <li><code>bell</code> → Bills & Utilities</li>
+                            <li><code>hydro</code> → Bills & Utilities</li>
+                            <li><code>internet</code> → Bills & Utilities</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{url_for('static', filename='js/categories.js')}}"></script>
+{% endblock %}
+
