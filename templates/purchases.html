@@ -1,9 +1,10 @@
 {% extends "base.html" %}
-
 {% block title %}Purchases - Budget Monitor{% endblock %}
 {% block page_title %}All Purchases{% endblock %}
 
 {% block page_actions %}
+<script src="{{url_for('static', filename='js/purchases.js')}}"></script>
+
 <div class="btn-group me-2">
     <button type="button" class="btn btn-primary" onclick="showAddPurchaseModal()">
         <i class="fas fa-plus me-1"></i>Add Purchase
@@ -168,10 +169,7 @@
         </div>
     </div>
 </div>
-{% endblock %}
 
-{% block scripts %}
-<script src="{{url_for('static', filename='js/purchases.js')}}"></script>
     <!-- Add Purchase Modal -->
 <div class="modal fade" id="addPurchaseModal" tabindex="-1">
     <div class="modal-dialog">
@@ -255,3 +253,5 @@
     </div>
 </div>
 {% endblock %}
+
+

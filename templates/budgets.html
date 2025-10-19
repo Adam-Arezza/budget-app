@@ -9,6 +9,7 @@
 {% endblock %}
 
 {% block content %}
+<script src="{{url_for('static', filename='js/budget.js')}}"></script>
 <div class="row">
     <!-- Budget Overview -->
     <div class="col-12 mb-4">
@@ -110,7 +111,7 @@
                             <option value="Bills & Utilities">Bills & Utilities</option>
                             <option value="Health & Fitness">Health & Fitness</option>
                             <option value="Travel">Travel</option>
-                            <option value="Other">Other</option>
+                            <option value="Total">Total</option>
                         </select>
                     </div>
                     <div class="mb-3">
@@ -128,8 +129,3 @@
     </div>
 </div>
 {% endblock %}
-{% block scripts %}
-<script src="{{url_for('static', filename='js/budget.js')}}"></script>
-{%endblock%}
-
-

@@ -1,12 +1,12 @@
-let currentPurchaseId = null;
-    let allPurchases = [];
+currentPurchaseId = null;
+let allPurchases = [];
 
-    // Load all purchases for client-side filtering
-    fetch('/api/purchases')
-        .then(response => response.json())
-        .then(data => {
-            allPurchases = data;
-        });
+// Load all purchases for client-side filtering
+fetch('/api/purchases')
+    .then(response => response.json())
+    .then(data => {
+        allPurchases = data;
+    });
 
 function searchPurchases() {
     const searchTerm = document.getElementById('searchInput').value.toLowerCase();

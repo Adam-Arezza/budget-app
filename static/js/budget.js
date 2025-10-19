@@ -21,28 +21,32 @@ function loadCategorySpending(budgetId, category) {
     const currentMonth = new Date();
     currentMonth.setDate(1);
     currentMonth.setHours(0, 0, 0, 0);
-    
+    let categoryPurchases
     fetch('/api/purchases')
         .then(response => response.json())
         .then(purchases => {
-            const categoryPurchases = purchases.filter(p => 
-                p.category === category && 
-                new Date(p.date) >= currentMonth
-            );
+                if(category != 'Total'){
+                    categoryPurchases = purchases.filter(p => 
+                    p.category === category && 
+                    new Date(p.date) >= currentMonth
+                );
+            }else {
+               categoryPurchases = purchases.filter(p => new Date(p.date) >= currentMonth) 
+            }
             
-            const totalSpent = categoryPurchases.reduce((sum, p) => sum + p.amount, 0);
-            
-            // Update the table
-            document.getElementById(`spent-${budgetId}`).textContent = `$${totalSpent.toFixed(2)}`;
-            
-            // Get budget amount from the table
-            const budgetAmount = parseFloat(document.querySelector(`#spent-${budgetId}`).closest('tr').querySelector('td:nth-child(2) strong').textContent.replace('$', ''));
-            const remaining = budgetAmount - totalSpent;
+    const totalSpentCategory = categoryPurchases.reduce((sum, p) => sum + p.amount, 0);
+
+    // Update the table
+    document.getElementById(`spent-${budgetId}`).textContent = `$${totalSpentCategory.toFixed(2)}`;
+    
+    // Get budget amount from the table
+    const budgetAmount = parseFloat(document.querySelector(`#spent-${budgetId}`).closest('tr').querySelector('td:nth-child(2) strong').textContent.replace('$', ''));
+            const remaining = budgetAmount - totalSpentCategory;
             
             document.getElementById(`remaining-${budgetId}`).textContent = `$${remaining.toFixed(2)}`;
             
             // Update progress bar
-            const percentage = Math.min((totalSpent / budgetAmount) * 100, 100);
+            const percentage = Math.min((totalSpentCategory/ budgetAmount) * 100, 100);
             const progressBar = document.getElementById(`progress-${budgetId}`);
             const progressText = document.getElementById(`progress-text-${budgetId}`);
             
