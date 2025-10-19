@@ -148,11 +148,11 @@ function updateSelectedCount() {
 
 function autoSyncOnLoad() {
     // Check if we have any purchases - if not, skip auto-sync
-    const purchaseCount = document.querySelectorAll('tbody tr').length;
-    if (purchaseCount === 0) {
-        console.log('No purchases found, skipping auto-sync');
-        return;
-    }
+    //const purchaseCount = document.querySelectorAll('tbody tr').length;
+    //if (purchaseCount === 0) {
+    //    console.log('No purchases found, skipping auto-sync');
+    //    return;
+    //}
     
     // Check if we've already auto-synced this session to prevent infinite loops
     if (sessionStorage.getItem('autoSyncCompleted')) {

@@ -2,7 +2,7 @@ import os.path
 import base64
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
+from google_auth_oauthlib.flow import InstalledAppFlow, Flow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from datetime import datetime
@@ -23,8 +23,8 @@ class GmailConnector:
         # The file token.json stores the user's access and refresh tokens, and is
         # created automatically when the authorization flow completes for the first
         # time.
-        if os.path.exists("token.json"):
-            self.creds = Credentials.from_authorized_user_file("token.json", SCOPES)
+        if os.path.exists("./token.json"):
+            self.creds = Credentials.from_authorized_user_file("./token.json", SCOPES)
         
         # If there are no (valid) credentials available, let the user log in.
         if not self.creds or not self.creds.valid:
